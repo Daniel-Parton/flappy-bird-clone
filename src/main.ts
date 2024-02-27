@@ -7,6 +7,7 @@ import { Menu } from "./Scenes/Menu";
 import { Exit } from "./Scenes/Exit";
 import { Score } from "./Scenes/Score";
 import { Pause } from "./Scenes/Pause";
+import { CharacterSelect } from "./Scenes/CharacterSelect";
 
 const config: Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -29,6 +30,7 @@ const config: Types.Core.GameConfig = {
     Boot,
     Preload,
     Menu,
+    CharacterSelect,
     Score,
     Gameplay,
     Pause,

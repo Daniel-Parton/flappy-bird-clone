@@ -14,7 +14,7 @@ export class Pause extends BaseScene {
 
     this.menu = [
       { action: { type: 'continueScene', scene: 'Gameplay' }, label: 'Continue' },
-      { action: { type: 'startScene', scene: 'Menu' } , label: 'Exit' },
+      { action: { type: 'startStopScene', stopScene: 'Gameplay', startScene: 'Menu' } , label: 'Exit' },
     ];
 
     this.initMenu(this.menu);

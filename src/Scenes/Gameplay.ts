@@ -1,9 +1,9 @@
 
 import { Math as PhaserMath, Types } from "phaser";
-import { BaseScene, Difficulties } from "./_Base";
+import { BaseScene, CharacterData, Difficulties, SharedCharacterData } from "./_Base";
 
 const GRAVITY = 600;
-const FLAP_POWER = 300;
+const FLAP_POWER = 225;
 const GAME_SPEED = 200;
 
 type ISprite = Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -26,6 +26,8 @@ const DifficultyLookup: Record<Difficulties, {
     pipeSpacingRange: { min: 250, max: 310 }
   }
 };
+
+
 
 
 export class Gameplay extends BaseScene {
@@ -57,13 +59,13 @@ export class Gameplay extends BaseScene {
     
     this.birdStartPosition = { x: this.gameWidth * 0.1, y: this.gameHeight / 2 };
 
-
-    this.initBg();
-    this.initPause();
-    this.initBird();
+    this.initBird(this.allCharacters[this.character]);
     this.initPipes();
-    this.initScore();
     this.initColliders();
+
+    this.initPause();
+    this.initScore();
+
   }
 
   initBg() {
@@ -89,14 +91,13 @@ export class Gameplay extends BaseScene {
     }, this);
   }
 
-  initBird() {
-    this.bird = this.physics.add
-      .sprite(this.birdStartPosition.x, this.birdStartPosition.y, 'bird')
-      .setOrigin(0)
-      .setFlipX(true)
-      .setScale(3);
-      
-    this.bird.setBodySize(this.bird.width, this.bird.height - 8, true);
+  initBird(data: CharacterData) {
+    const shared: SharedCharacterData = data;
+
+    this.bird = this
+      .buildCharacter(this.physics.add, data, { x: this.birdStartPosition.x, y: this.birdStartPosition.y})
+      .setOrigin(0);
+
     this.bird.body.gravity.y = GRAVITY;
     this.bird.setCollideWorldBounds(true, undefined, 0.2, true);
     this.physics.world.on('worldbounds', (b: Phaser.Physics.Arcade.Body, _up: boolean, down: boolean) => {
@@ -104,15 +105,6 @@ export class Gameplay extends BaseScene {
         this.bird.setVelocityY(-(FLAP_POWER / 2));
       }
     }, this);
-
-    this.anims.create({
-      key: 'fly',
-      frames: this.anims.generateFrameNumbers('bird', { start: 9, end: 15 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    this.bird.play('fly');
   }
 
   initPipes() {
