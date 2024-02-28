@@ -1,5 +1,6 @@
 
-import { BaseScene, Characters, MenuItem } from "./_Base";
+import { Characters } from "../Characters";
+import { BaseScene, MenuItem } from "./_Base";
 
 export class CharacterSelect extends BaseScene {
 
@@ -20,12 +21,11 @@ export class CharacterSelect extends BaseScene {
     const characters: Phaser.GameObjects.Sprite[] = [];
     const gapX = 200;
 
-    Object.keys(this.allCharacters).forEach((key: Characters, index) => {
-      const data = this.allCharacters[key];
-      const initialScale = data.scale * 2;
-      const choice = this
-        .buildCharacter(this.add, data, {x: x + ((index - 1) * gapX), y })
-        .setScale(data.scale * 1.5)
+    Object.keys(this.characters).forEach((key: Characters, index) => {
+      const c = this.characters[key];
+      const initialScale = c.flyData.scale * 2;
+      const choice = c.buildForFly(this, 'default', {x: x + ((index - 1) * gapX), y })
+        .setScale(c.flyData.scale * 1.5)
         .setInteractive({ cursor: 'pointer'})
       const zoomScale = 1.2;
 

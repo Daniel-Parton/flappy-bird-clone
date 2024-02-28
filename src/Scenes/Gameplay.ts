@@ -1,6 +1,6 @@
 
 import { Math as PhaserMath, Types } from "phaser";
-import { BaseScene, CharacterData, Difficulties, SharedCharacterData } from "./_Base";
+import { BaseScene, Difficulties } from "./_Base";
 
 const GRAVITY = 600;
 const FLAP_POWER = 225;
@@ -59,7 +59,7 @@ export class Gameplay extends BaseScene {
     
     this.birdStartPosition = { x: this.gameWidth * 0.1, y: this.gameHeight / 2 };
 
-    this.initBird(this.allCharacters[this.character]);
+    this.initBird();
     this.initPipes();
     this.initColliders();
 
@@ -91,11 +91,9 @@ export class Gameplay extends BaseScene {
     }, this);
   }
 
-  initBird(data: CharacterData) {
-    const shared: SharedCharacterData = data;
-
-    this.bird = this
-      .buildCharacter(this.physics.add, data, { x: this.birdStartPosition.x, y: this.birdStartPosition.y})
+  initBird() {
+    this.bird = this.character
+      .buildForFly(this, 'physics', this.birdStartPosition)
       .setOrigin(0);
 
     this.bird.body.gravity.y = GRAVITY;

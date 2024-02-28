@@ -66,12 +66,10 @@ export class Preload extends BaseScene {
 
   preload () {
     this.load.setPath('assets');
-    this.load.spritesheet('bird', 'birdSprite.png', {
-        
-        frameWidth: 16, frameHeight: 16
-    });
-    this.load.image('griff', 'griff.png');
-    this.load.image('louis', 'louis.png');
+    Object.keys(this.characters).forEach((key) => {
+      this.characters[key].preload(this.load);
+    }, this);
+
     this.load.image('pipe', 'pipe.png');
     this.load.image('pause', 'pause.png');
     this.load.image('back', 'back.png');

@@ -1,46 +1,9 @@
 
-import { GameObjects, Scene, Types } from "phaser";
+import { Scene, Types } from "phaser";
+import { LocalStorageHelper } from "../Utils/LocalStorageHelper";
+import { CharacterLookup, Characters, FlappyBirdCharacter } from "../Characters";
 
 export type Difficulties = 'easy' | 'normal' | 'hard';
-export type Characters = 'Bird' | 'Louis' | 'Griffin';
-
-export type SharedCharacterData = {
-  name: string;
-  flipX?: boolean;
-  scale: number;
-  bodyHeightFn?: (height: number) => number;
-}
-
-export type CharacterData = |
-  (SharedCharacterData & { type: 'image' }) |
-  (SharedCharacterData & { type: 'sprite', startFrame: number, endFrame: number, frameRate: number, repeat: number });
-
-const CharacterDataLookup: Record<Characters, CharacterData> = {
-  'Bird': {
-    type: 'sprite',
-    name: 'bird',
-    bodyHeightFn: (h) => h -8,
-    scale: 3,
-    flipX: true,
-    startFrame:9,
-    endFrame: 15,
-    frameRate: 8,
-    repeat: -1
-  },
-  'Griffin': {
-    type: 'image',
-    name: 'griff',
-    scale: 0.1,
-    bodyHeightFn: (h) => h -20,
-
-  },
-  'Louis': {
-    type: 'image',
-    name: 'louis',
-    scale: 0.3,
-    bodyHeightFn: (h) => h -30
-  }
-};
 
 export type MenuItem = { 
   label: string, 
@@ -62,9 +25,9 @@ export abstract class BaseScene extends Scene {
   gameCenter: Types.Math.Vector2Like;
 
   bestScore: number;
-  character: Characters;
+  character: FlappyBirdCharacter;
 
-  allCharacters: Record<Characters, CharacterData> = CharacterDataLookup;
+  characters: Record<Characters, FlappyBirdCharacter> = CharacterLookup;
   menuItemFz = 32;
   menuItemLh = 42;
   menuItemFw = 600;
@@ -81,24 +44,10 @@ export abstract class BaseScene extends Scene {
   init() {
     this.add.image(0, 0, 'sky').setOrigin(0, 0);
 
-    this.bestScore = 0;
-    try {
-      this.bestScore = parseInt(localStorage.getItem(bestScoreKey));
-      if(isNaN(this.bestScore)) {
-        this.bestScore = 0;
-      }
-    } catch (e) {
-      // ignore
-    }
+    this.bestScore = LocalStorageHelper.getInt(bestScoreKey);
 
-    try {
-      this.character = localStorage.getItem(characterKey) as Characters;
-      if(!this.character || Object.keys(this.allCharacters).indexOf(this.character) === -1) {
-        this.character = 'Griffin';
-      }
-    } catch (e) {
-      // ignore
-    }
+    const characterName = LocalStorageHelper.getString(characterKey);
+    this.character = this.characters[characterName as Characters] ?? this.characters.Bird;
 
     this.gameHeight = this.game.config.height as number;
     this.gameWidth = this.game.config.width as number;
@@ -148,44 +97,12 @@ export abstract class BaseScene extends Scene {
   }
 
   setBestScore(value: number) {
-      this.bestScore = value;
-      localStorage.setItem(bestScoreKey, this.bestScore.toString());
+    this.bestScore = value;
+    LocalStorageHelper.set(bestScoreKey, value);
   }
 
   setCharacter(character: Characters) {
-    this.character = character;
-    localStorage.setItem(characterKey, character);
-  }
-
-  buildCharacter<T = (GameObjects.GameObjectFactory | Phaser.Physics.Arcade.Factory)>(factory: T, characterData: CharacterData, position: Types.Math.Vector2Like) {
-    const shared: SharedCharacterData = characterData;
-
-    const character = (factory as Phaser.Physics.Arcade.Factory)
-      .sprite(position.x, position.y, shared.name)
-      .setName('ch_' + shared.name)
-
-    if(shared.scale) {
-      character.setScale(shared.scale);
-    }
-
-    if(shared.flipX) {
-      character.setFlipX(true);
-    }
-
-    if(shared.bodyHeightFn && character instanceof Phaser.Physics.Arcade.Sprite) {
-      character.setBodySize(character.width, shared.bodyHeightFn(character.height), true);
-    }
-
-    if(characterData.type === 'sprite') {
-      this.anims.create({
-       key: `${characterData}_fly`,
-       frames: this.anims.generateFrameNumbers(characterData.name, { start: characterData.startFrame, end: characterData.endFrame }),
-       frameRate: characterData.frameRate,
-       repeat: characterData.repeat
-     });
-     character.play(`${characterData}_fly`);
-    }
-
-    return character;
+    this.character = this.characters[character];
+    LocalStorageHelper.set(characterKey, character);
   }
 }
