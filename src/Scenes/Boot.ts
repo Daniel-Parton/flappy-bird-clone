@@ -7,7 +7,7 @@ export class Boot extends Scene {
   }
 
   preload () {
-    this.load.setPath('assets');
+    this.load.setPath('./assets');
     this.load.image('sky', 'sky.png');
   }
 

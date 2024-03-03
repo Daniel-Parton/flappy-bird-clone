@@ -21,7 +21,7 @@ export class Preload extends BaseScene {
       }, 1000);
     }, this);
 
-    this.load.setPath('assets');
+    this.load.setPath('./assets');
     Object.keys(this.characters).forEach((key) => {
       this.characters[key].preload(this.load);
     }, this);

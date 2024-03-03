@@ -5,15 +5,11 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
-const line = "---------------------------------------------------------";
-const msg = `❤️❤️❤️ Tell us about your game! - games@phaser.io ❤️❤️❤️`;
-process.stdout.write(`${line}\n${msg}\n${line}\n`);
-
 module.exports = {
     mode: "production",
     entry: "./src/main.ts",
     output: {
-        path: path.resolve(process.cwd(), 'dist'),
+        path: path.resolve(process.cwd(), 'build'),
         filename: "./bundle.min.js"
     },
     resolve: {
