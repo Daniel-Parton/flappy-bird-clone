@@ -9,8 +9,8 @@ export class Pause extends BaseScene {
     super('Pause');
   }
 
-  init() {
-    super.init();
+  create() {
+    super.create();
 
     this.menu = [
       { action: { type: 'continueScene', scene: 'Gameplay' }, label: 'Continue' },

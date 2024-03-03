@@ -4,7 +4,6 @@ import { Boot } from "./Scenes/Boot";
 import { Preload } from "./Scenes/Preload";
 import { Gameplay } from "./Scenes/Gameplay";
 import { Menu } from "./Scenes/Menu";
-import { Exit } from "./Scenes/Exit";
 import { Score } from "./Scenes/Score";
 import { Pause } from "./Scenes/Pause";
 import { CharacterSelect } from "./Scenes/CharacterSelect";
@@ -34,7 +33,6 @@ const config: Types.Core.GameConfig = {
     Score,
     Gameplay,
     Pause,
-    Exit,
   ]
 };
 

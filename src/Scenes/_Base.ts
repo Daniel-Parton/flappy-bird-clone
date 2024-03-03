@@ -41,7 +41,7 @@ export abstract class BaseScene extends Scene {
     this.sceneOptions = options || {};
   }
 
-  init() {
+  create() {
     this.add.image(0, 0, 'sky').setOrigin(0, 0);
 
     this.bestScore = LocalStorageHelper.getInt(bestScoreKey);

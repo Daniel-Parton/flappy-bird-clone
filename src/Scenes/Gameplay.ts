@@ -27,9 +27,6 @@ const DifficultyLookup: Record<Difficulties, {
   }
 };
 
-
-
-
 export class Gameplay extends BaseScene {
 
   bird: Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -54,8 +51,8 @@ export class Gameplay extends BaseScene {
     super('Gameplay');
   }
 
-  init() {
-    super.init();
+  create() {
+    super.create();
     
     this.birdStartPosition = { x: this.gameWidth * 0.1, y: this.gameHeight / 2 };
 
@@ -66,10 +63,9 @@ export class Gameplay extends BaseScene {
     this.initPause();
     this.initScore();
 
-  }
-
-  initBg() {
-    this.add.image(0, 0, 'sky').setOrigin(0, 0);
+    this.input.on('pointerdown', this.flap, this);
+    this.input.keyboard.on('keydown-SPACE', this.flap, this);
+    this.input.keyboard.on('keydown-ESC', this.pauseGame, this);
   }
 
   initPause() {
@@ -126,12 +122,6 @@ export class Gameplay extends BaseScene {
     this.physics.add.collider(this.bird, this.pipes, this.gameOver, undefined, this);
   }
 
-  create() {
-    this.input.on('pointerdown', this.flap, this);
-    this.input.keyboard.on('keydown-SPACE', this.flap, this);
-    this.input.keyboard.on('keydown-ESC', this.pauseGame, this);
-  }
-
   update(_: number, delta: number) {
     const tooHigh = this.bird.y <= -this.bird.height;
     const tooLow =  this.bird.y >= this.gameHeight;
@@ -139,8 +129,6 @@ export class Gameplay extends BaseScene {
     if (tooHigh || tooLow) {
       this.gameOver();
     }
-
-    
 
     this.tryRecyclePipes(delta);
   }

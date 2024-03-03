@@ -10,8 +10,8 @@ export class CharacterSelect extends BaseScene {
     super('CharacterSelect', { withBack: true });
   }
 
-  init() {
-    super.init();
+  create() {
+    super.create();
       
     const { width, height } = this.scale;
     const x = width * 0.5;

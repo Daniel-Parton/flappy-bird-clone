@@ -9,8 +9,8 @@ export class Score extends BaseScene {
     super('Score', { withBack: true });
   }
 
-  init() {
-    super.init();
+  create() {
+    super.create();
 
     this.add
       .text(this.gameCenter.x, this.gameCenter.y, `Best Score: ${this.bestScore}`, { font: '600 32px Arial', color: '#fff' })

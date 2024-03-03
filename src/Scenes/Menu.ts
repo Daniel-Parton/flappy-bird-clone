@@ -9,14 +9,13 @@ export class Menu extends BaseScene {
     super('Menu');
   }
 
-  init() {
-    super.init();
+  create() {
+    super.create();
 
     this.menu = [
       { action: { type: 'startScene', scene: 'Gameplay' }, label: 'Play' },
       { action: { type: 'startScene', scene: 'CharacterSelect' }, label: 'Character' },
-      { action: { type: 'startScene', scene: 'Score' }, label: 'Score' },
-      { action: { type: 'startScene', scene: 'Exit' }, label: 'Exit' }
+      { action: { type: 'startScene', scene: 'Score' }, label: 'Score' }
     ];
 
     this.initMenu(this.menu);

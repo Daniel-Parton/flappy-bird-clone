@@ -14,14 +14,26 @@ export class Preload extends BaseScene {
     
   }
 
-  init() {
-   super.init();
-    this.initLoader();
-   this.load.on("complete", () => {
-    setTimeout(() => {
-      this.scene.start("Menu")
-    }, 1000);
-  }, this);
+  preload () {
+    this.load.on("complete", () => {
+      setTimeout(() => {
+        this.scene.start("Menu")
+      }, 1000);
+    }, this);
+
+    this.load.setPath('assets');
+    Object.keys(this.characters).forEach((key) => {
+      this.characters[key].preload(this.load);
+    }, this);
+
+    this.load.image('pipe', 'pipe.png');
+    this.load.image('pause', 'pause.png');
+    this.load.image('back', 'back.png');
+  }
+
+  create() {
+   super.create();
+   this.initLoader();
   }
 
   initLoader() {
@@ -62,16 +74,5 @@ export class Preload extends BaseScene {
     targets: right,
     delay: speed * 3,
    });
-  }
-
-  preload () {
-    this.load.setPath('assets');
-    Object.keys(this.characters).forEach((key) => {
-      this.characters[key].preload(this.load);
-    }, this);
-
-    this.load.image('pipe', 'pipe.png');
-    this.load.image('pause', 'pause.png');
-    this.load.image('back', 'back.png');
   }
 }

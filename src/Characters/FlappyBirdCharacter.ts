@@ -37,7 +37,6 @@ export class FlappyBirdCharacter implements IFlappyBirdCharacter {
 
   buildForFly(scene: Phaser.Scene, variant: 'default' | 'physics', position: Phaser.Types.Math.Vector2Like) {
     const factory = variant === 'default' ? scene.add : scene.physics.add;
-    debugger;
     const character = (factory as Phaser.Physics.Arcade.Factory)
       .sprite(position.x, position.y, this.name)
       .setName('f_' + this.name)
@@ -57,25 +56,32 @@ export class FlappyBirdCharacter implements IFlappyBirdCharacter {
     }
 
     const flyAnimationName = `${this.name}_fly`;
+    const hasFlyAnimation = scene.anims.exists(flyAnimationName);
+
     if(this.flyData.type === 'sprite') {
-      scene.anims.create({
-       key: flyAnimationName,
-       frames: scene.anims.generateFrameNumbers(this.name, { start: this.flyData.startFrame, end: this.flyData.endFrame }),
-       frameRate: this.flyData.frameRate,
-       repeat: this.flyData.repeat
-     });
-     character.play(flyAnimationName);
+      if(!hasFlyAnimation) {
+        scene.anims.create({
+          key: flyAnimationName,
+          frames: scene.anims.generateFrameNumbers(this.name, { start: this.flyData.startFrame, end: this.flyData.endFrame }),
+          frameRate: this.flyData.frameRate,
+          repeat: this.flyData.repeat
+        });
+      }
+      
+      character.play(flyAnimationName);
     }
 
     if(this.flyData.type === 'spriteJson') {
-      console.log(scene.textures.get(this.name).getFrameNames()); 
-      scene.anims.create({
-        key: flyAnimationName,
-        frames: this.flyData.frameNames.map(name => ({ key: this.name, frame: name })),
-        frameRate: this.flyData.frameRate,
-        repeat: this.flyData.repeat
-      });
-     character.play(flyAnimationName);
+      if(!hasFlyAnimation) {
+        scene.anims.create({
+          key: flyAnimationName,
+          frames: this.flyData.frameNames.map(name => ({ key: this.name, frame: name })),
+          frameRate: this.flyData.frameRate,
+          repeat: this.flyData.repeat
+        });
+      }
+        
+      character.play(flyAnimationName);
     }
 
     return character;
