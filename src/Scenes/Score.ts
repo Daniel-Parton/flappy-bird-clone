@@ -13,7 +13,7 @@ export class Score extends BaseScene {
     super.create();
 
     this.add
-      .text(this.gameCenter.x, this.gameCenter.y, `Best Score: ${this.bestScore}`, { font: '600 32px Arial', color: '#fff' })
+      .text(this.gameCenter.x, this.gameCenter.y, `Best Score: ${this.bestScore}`, { font: `600 ${32 * this.internalScale}px Arial`, color: '#fff' })
       .setOrigin(0.5, 1)
   }
 }

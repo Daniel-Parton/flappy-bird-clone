@@ -35,7 +35,7 @@ export class FlappyBirdCharacter implements IFlappyBirdCharacter {
     this.preloadData(load, this.flyData);
   }
 
-  buildForFly(scene: Phaser.Scene, variant: 'default' | 'physics', position: Phaser.Types.Math.Vector2Like) {
+  buildForFly(scene: Phaser.Scene, variant: 'default' | 'physics', position: Phaser.Types.Math.Vector2Like, internalScale: number) {
     const factory = variant === 'default' ? scene.add : scene.physics.add;
     const character = (factory as Phaser.Physics.Arcade.Factory)
       .sprite(position.x, position.y, this.name)
@@ -44,7 +44,7 @@ export class FlappyBirdCharacter implements IFlappyBirdCharacter {
     const { scale, bodyHeightFn, flipX } = this.flyData;
 
     if(scale) {
-      character.setScale(scale);
+      character.setScale(scale * internalScale);
     }
 
     if(flipX) {

@@ -2,6 +2,7 @@
 import { Scene, Types } from "phaser";
 import { LocalStorageHelper } from "../Utils/LocalStorageHelper";
 import { CharacterLookup, Characters, FlappyBirdCharacter } from "../Characters";
+import { MobileSize } from "../Utils/DeviceHelper";
 
 export type Difficulties = 'easy' | 'normal' | 'hard';
 
@@ -20,16 +21,44 @@ const characterKey = 'character';
 
 export abstract class BaseScene extends Scene {
   sceneOptions: SceneOptions;
-  gameHeight: number;
-  gameWidth: number;
-  gameCenter: Types.Math.Vector2Like;
+
+  get internalScale() {
+    return this.isMobileSize ? 1.5 : 1;
+  }
+
+  get gameHeight() {
+    return this.scale.height;
+  }
+  get gameWidth() {
+    return this.scale.width;
+  }
+
+  get gameCenter(): Types.Math.Vector2Like {
+    return { x: this.gameWidth / 2, y: this.gameHeight / 2};
+  }
+
+  get isMobileSize() {
+    return this.gameWidth === MobileSize.width && this.gameHeight === MobileSize.height;
+  }
 
   bestScore: number;
   character: FlappyBirdCharacter;
+  background?: Phaser.GameObjects.Sprite
 
   characters: Record<Characters, FlappyBirdCharacter> = CharacterLookup;
-  menuItemFz = 32;
-  menuItemLh = 42;
+
+  get menuItemFz() {
+    return 32 * this.internalScale;
+  };
+
+  get menuItemLh() {
+    return 50 * this.internalScale;
+  };
+
+  get menuItemGap() {
+    return 10 * this.internalScale;
+  };
+
   menuItemFw = 600;
   menuItemColor =  '#FFFFFF';
   menuItemHighlightColor =  '#FFFF00';
@@ -42,21 +71,19 @@ export abstract class BaseScene extends Scene {
   }
 
   create() {
-    this.add.image(0, 0, 'sky').setOrigin(0, 0);
-
-    this.bestScore = LocalStorageHelper.getInt(bestScoreKey);
 
     const characterName = LocalStorageHelper.getString(characterKey);
     this.character = this.characters[characterName as Characters] ?? this.characters.Bird;
-
-    this.gameHeight = this.game.config.height as number;
-    this.gameWidth = this.game.config.width as number;
-    this.gameCenter = { x: this.gameWidth / 2, y: this.gameHeight / 2};
+    this.bestScore = LocalStorageHelper.getInt(bestScoreKey);
+    
+    // Create a TileSprite with the size of the game and set its image
+    this.background = this.add.sprite(0, 0, 'sky')
+      .setOrigin(0, 0).setScale(this.gameWidth / 800, this.gameHeight / 600);
 
     if(this.sceneOptions.withBack) {
-      this.backButton = this.add.image(this.gameWidth - 10, this.gameHeight - 10, 'back')
+      this.backButton = this.add.image(this.gameWidth - (10 * this.internalScale), this.gameHeight - (10 * this.internalScale), 'back')
       .setOrigin(1)
-      .setScale(1.5)
+      .setScale(1.5 * this.internalScale)
       .setInteractive({ cursor: 'pointer'})
       .on('pointerdown', () => this.scene.start('Menu'), this);
     }

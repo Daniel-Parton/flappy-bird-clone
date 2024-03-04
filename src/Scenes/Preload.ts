@@ -40,11 +40,11 @@ export class Preload extends BaseScene {
    const { width, height } = this.scale;
    const x = width * 0.5;
    const y = height * 0.5;
-   const barWidth = 32.5;
-   const barHeight = 75;
-   const left = this.add.rectangle(x -barWidth - 10, y, barWidth, barHeight, White, 1);
+   const barWidth = 32.5 * this.internalScale;
+   const barHeight = 75 * this.internalScale;
+   const left = this.add.rectangle(x -barWidth - (10 * this.internalScale), y, barWidth, barHeight, White, 1);
    const middle = this.add.rectangle(x, y, barWidth, barHeight, White, 1);
-   const right = this.add.rectangle(x + barWidth + 10, y, barWidth, barHeight, White, 1);
+   const right = this.add.rectangle(x + barWidth + (10 * this.internalScale), y, barWidth, barHeight, White, 1);
     
    const speed = 150;
    const scaleY = 1.75;

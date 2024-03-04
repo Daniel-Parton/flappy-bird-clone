@@ -24,8 +24,8 @@ export class CharacterSelect extends BaseScene {
     Object.keys(this.characters).forEach((key: Characters, index) => {
       const c = this.characters[key];
       const initialScale = c.flyData.scale * 2;
-      const choice = c.buildForFly(this, 'default', {x: x + ((index - 1) * gapX), y })
-        .setScale(c.flyData.scale * 1.5)
+      const choice = c.buildForFly(this, 'default', {x: x + ((index - 1) * gapX), y }, this.internalScale)
+        .setScale(c.flyData.scale * 1.5 * this.internalScale)
         .setInteractive({ cursor: 'pointer'})
       const zoomScale = 1.2;
 

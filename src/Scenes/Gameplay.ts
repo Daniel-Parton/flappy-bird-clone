@@ -3,7 +3,7 @@ import { Math as PhaserMath, Types } from "phaser";
 import { BaseScene, Difficulties } from "./_Base";
 
 const GRAVITY = 600;
-const FLAP_POWER = 225;
+const FLAP_POWER = 175;
 const GAME_SPEED = 200;
 
 type ISprite = Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -69,9 +69,9 @@ export class Gameplay extends BaseScene {
   }
 
   initPause() {
-    this.pauseButton = this.add.image(this.gameWidth - 10, this.gameHeight - 10, 'pause')
+    this.pauseButton = this.add.image(this.gameWidth - (10 * this.internalScale), this.gameHeight - (10 * this.internalScale), 'pause')
       .setOrigin(1)
-      .setScale(1.5)
+      .setScale(2 * this.internalScale)
       .setInteractive({ cursor: 'pointer'})
       .on('pointerdown', (p: Phaser.Input.Pointer) => {
         p.event.stopPropagation();
@@ -89,10 +89,10 @@ export class Gameplay extends BaseScene {
 
   initBird() {
     this.bird = this.character
-      .buildForFly(this, 'physics', this.birdStartPosition)
+      .buildForFly(this, 'physics', this.birdStartPosition, this.internalScale)
       .setOrigin(0);
 
-    this.bird.body.gravity.y = GRAVITY;
+    this.bird.body.gravity.y = GRAVITY * this.internalScale;
     this.bird.setCollideWorldBounds(true, undefined, 0.2, true);
     this.physics.world.on('worldbounds', (b: Phaser.Physics.Arcade.Body, _up: boolean, down: boolean) => {
       if (b.gameObject === this.bird && down) {
@@ -109,13 +109,13 @@ export class Gameplay extends BaseScene {
       this.placePipe(upper, lower);
     }
 
-    this.pipes.setVelocityX(-GAME_SPEED);
+    this.pipes.setVelocityX(-GAME_SPEED * (this.internalScale / 2));
   }
 
   initScore() {
     this.score = 0;
-    this.scoreText = this.add.text(16, 16, 'Score: 0', { font: '700 32px Arial', color: '#000' });
-    this.bestScoreText = this.add.text(16, 52, `Best score: ${this.bestScore}`, { font: '500 18px Arial', color: '#000' });
+    this.scoreText = this.add.text(16 * this.internalScale, 16 * this.internalScale, 'Score: 0', { font: `700 ${32 * this.internalScale}px Arial`, color: '#000' });
+    this.bestScoreText = this.add.text(16 * this.internalScale, 52 * this.internalScale, `Best score: ${this.bestScore}`, { font: `500 ${18 * this.internalScale}px Arial`, color: '#000' });
   }
 
   initColliders() {
@@ -160,7 +160,7 @@ export class Gameplay extends BaseScene {
     if(this.isPaused) {
       return;
     }
-    this.bird.body.velocity.y = -FLAP_POWER;
+    this.bird.body.velocity.y = -(FLAP_POWER * this.internalScale);
   }
 
   placePipe(upper: ISprite, lower: ISprite) {
@@ -170,12 +170,12 @@ export class Gameplay extends BaseScene {
     if(x === 0) {
       x = 400
     } else {
-      x += PhaserMath.Between(pipeSpacingRange.min, pipeSpacingRange.max);
+      x += PhaserMath.Between(pipeSpacingRange.min * this.internalScale * 1.1, pipeSpacingRange.max  * this.internalScale * 1.1);
     }
 
-    const gap = PhaserMath.Between(pipeGapRange.min, pipeGapRange.max);
-    const maxY = this.gameHeight - gap - 75;
-    const minY = 75;
+    const gap = PhaserMath.Between(pipeGapRange.min * this.internalScale * 1.1, pipeGapRange.max * this.internalScale * 1.1);
+    const maxY = this.gameHeight - gap - (75 * this.internalScale);
+    const minY = 75 * this.internalScale;
 
     upper.setX(x);
     upper.setY(PhaserMath.Between(minY, maxY));
@@ -190,7 +190,7 @@ export class Gameplay extends BaseScene {
   buildPipe(): ISprite {
     return (this.pipes.create(0, 0, 'pipe') as ISprite)
       .setImmovable(true)
-      .setScale(0.22)
+      .setScale(0.22 * (this.internalScale * 1.25))
       .setOrigin(0, 0);
   }
 
